@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="2018//02/02 进行了补充 $EA=U$ $E^{-1}\cdot E\cdot A=E^{-1}\cdot U$ $A=E^{-1}\cdot U$ E = E_{1} \cdot E_{2} \cdot E_{3} \cdot E_{4}L=E^{-1} = E_{4}^{-1} \cdot E_{3}^{-1} \cdot E_{2}^{-1} \cdot E_{1}^{-1}$U$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性代数(3)：$A=LU$分解">
+<meta property="og:url" content="http://iacc.ml/posts/28477bfb/index.html">
+<meta property="og:site_name" content="AiM&#39;s Blog">
+<meta property="og:description" content="2018//02/02 进行了补充 $EA=U$ $E^{-1}\cdot E\cdot A=E^{-1}\cdot U$ $A=E^{-1}\cdot U$ E = E_{1} \cdot E_{2} \cdot E_{3} \cdot E_{4}L=E^{-1} = E_{4}^{-1} \cdot E_{3}^{-1} \cdot E_{2}^{-1} \cdot E_{1}^{-1}$U$">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-19T15:53:47.809Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="线性代数(3)：$A=LU$分解">
+<meta name="twitter:description" content="2018//02/02 进行了补充 $EA=U$ $E^{-1}\cdot E\cdot A=E^{-1}\cdot U$ $A=E^{-1}\cdot U$ E = E_{1} \cdot E_{2} \cdot E_{3} \cdot E_{4}L=E^{-1} = E_{4}^{-1} \cdot E_{3}^{-1} \cdot E_{2}^{-1} \cdot E_{1}^{-1}$U$">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://iacc.ml/posts/28477bfb/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>线性代数(3)：$A=LU$分解 | AiM's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">AiM's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-学习记录">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/study" rel="section"><i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>学习记录</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/sontallive" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://iacc.ml/posts/28477bfb/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sontal">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AiM's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">线性代数(3)：$A=LU$分解
+
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-01 21:00:25" itemprop="dateCreated datePublished" datetime="2018-02-01T21:00:25+08:00">2018-02-01</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-19 23:53:47" itemprop="dateModified" datetime="2019-07-19T23:53:47+08:00">2019-07-19</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <pre><code>2018//02/02 进行了补充
+</code></pre><p>$EA=U$</p>
+<p>$E^{-1}\cdot E\cdot A=E^{-1}\cdot U$</p>
+<p>$A=E^{-1}\cdot U$</p>
+<script type="math/tex; mode=display">E = E_{1} \cdot E_{2} \cdot E_{3} \cdot E_{4}</script><script type="math/tex; mode=display">L=E^{-1} = E_{4}^{-1} \cdot E_{3}^{-1} \cdot E_{2}^{-1} \cdot E_{1}^{-1}</script><p>$U$ 是指化简后的行列式</p>
+<p>将矩阵分解为$A=LU$的形式称作L(Lower Matrix, 即下三角矩阵) U(Upper Matrix, 即上三角矩阵)分解</p>
+<p>看一个例子就知道为什么这么叫了<br><a id="more"></a></p>
+<script type="math/tex; mode=display">
+A = \left\{
+
+\begin{matrix}
+
+1 & 3 & 0 \\
+
+2 & 4 & 0 \\
+2 & 0 & 1
+
+\end{matrix}
+
+\right\}
+\tag{a}</script><p>将其分解为$A=LU$的形式</p>
+<script type="math/tex; mode=display">
+A =
+\left\{
+\begin{matrix}
+
+1 & 0 & 0 \\
+2 & 1 & 0 \\
+2 & 2 & 1
+
+\end{matrix}
+\right\}
+\cdot
+\left\{
+\begin{matrix}
+
+1 & 3 & 0 \\
+0 & -2 & 0 \\
+0 & 0 & 1
+
+\end{matrix}
+\right\}</script><p>左边的L刚好是下三角矩阵，右边的U是化简后的矩阵，当然是个上三角矩阵</p>
+<p>不过这样的分解有什么好处呢？</p>
+<p>我们看一下$EA=U$ 和$A=LU$两种方式有什么区别，$A=LU$又好在哪里呢</p>
+<p>我们从头开始, 上面的A是我们要化简的矩阵，我们要先把 (2,1) 和  (3,1)位置化简成0</p>
+<p>只需要将第二行和第三行都减去2倍的第一行就行了</p>
+<script type="math/tex; mode=display">
+E_{3,1}\cdot E_{2,1} \cdot A= 
+\left\{
+
+\begin{matrix}
+
+1&0&0  \\
+-2&1&0 \\
+0&0&1
+\end{matrix}
+
+\right\}
+\cdot
+\left\{
+
+\begin{matrix}
+
+1&0&0  \\
+0&1&0 \\
+-2&0&1
+\end{matrix}
+
+\right\}
+\cdot
+A</script><script type="math/tex; mode=display">
+=
+\left\{
+
+\begin{matrix}
+
+1&3&0  \\
+0&-2&0 \\
+0&-6&1
+\end{matrix}
+
+\right\}</script><p>下一步就是将 (3,2)位置的-6消去，只需将第三行减去3倍的第二行</p>
+<script type="math/tex; mode=display">
+E_{3,2}=
+\left\{
+
+\begin{matrix}
+
+1&0&0  \\
+0&1&0 \\
+0&-3&1
+\end{matrix}
+
+\right\}</script><p>那么求得</p>
+<script type="math/tex; mode=display">
+E=E_{3,2} \cdot E_{3,1} \cdot E_{2,1} =</script><script type="math/tex; mode=display">
+\left\{
+
+\begin{matrix}
+
+1&0&0  \\
+-2&1&0 \\
+4&-3&1
+\end{matrix}
+
+\right\}</script><p>那L=多少呢</p>
+<p>根据定义得</p>
+<script type="math/tex; mode=display">
+L=E_{2,1}^{-1} \cdot E_{3,1}^{-1} \cdot E_{3,2}^{-1}</script><script type="math/tex; mode=display">
+=
+\left\{
+
+\begin{matrix}
+
+1&0&0  \\
+2&1&0 \\
+2&3&1
+\end{matrix}
+
+\right\}</script><p>比较一下$L$和$E$, 除符号外，明显的不同就是(3,1) 这个位置</p>
+<p>当使用L时，我们只需要将$E_{3,2} , E_{3,1} , E_{2,1}$除对角线以外不是零的数取相反数填入L中就行了</p>
+<p>但是E中的前一次平移可能会对后一次的平移产生影响，E中就没有这种特性</p>
+<p>所以当使用$A=LU$分解时，就可以简单的填入数字，得到L</p>
+<p>这就是采用LU分解的原因啦</p>
+<p>知道为什么这么叫了</p>
+<p>当然，上面讨论的矩阵A必须是可逆矩阵。还有一点不知道你们有没有注意</p>
+<p>矩阵A在消元的时候没有进行置换，即行互换</p>
+<p>行互换用的是置换矩阵P，由单位阵置换而来。</p>
+<p>比如说三阶矩阵互换1,2行的置换矩阵是</p>
+<script type="math/tex; mode=display">
+\left\{
+
+\begin{matrix}
+
+0&1&0 \\
+1&0&0  \\
+0&0&1
+\end{matrix}
+
+\right\}</script><p>当需要行互换的时候，LU分解变成什么样子呢。</p>
+<p>$PA=LU$</p>
+<p>这就是答案，为什么呢，我们可以先将A互换行得到一个不需要互换行的矩阵</p>
+<p>这个矩阵就可以分解为LU的形式</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/posts/665944d5/" rel="next" title="线性代数(2)：矩阵的逆$A^{-1}$">
+                <i class="fa fa-chevron-left"></i> 线性代数(2)：矩阵的逆$A^{-1}$
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/posts/63b9a49a/" rel="prev" title="线性代数(4)：矩阵转置">
+                线性代数(4)：矩阵转置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">Sontal</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+  <div class="links-of-author motion-element">
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/sontallive" title="GitHub &rarr; https://github.com/sontallive" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:sontallive@gmail.com" title="E-Mail &rarr; mailto:sontallive@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sontal</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+  <script src="/js/js.cookie.js?v=7.2.0"></script>
+  <script src="/js/scroll-cookie.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
