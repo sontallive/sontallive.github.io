@@ -326,6 +326,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http:/sontal.me/posts/90d9b0f3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Sontal">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AiM's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/posts/90d9b0f3/" class="post-title-link" itemprop="url">在U盘中从零开始安装ArchLinux</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-10 00:00:00 / 修改时间：14:55:35" itemprop="dateCreated datePublished" datetime="2019-11-10T00:00:00+08:00">2019-11-10</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h1><p>据说Linux届有一个叫ArchLinux的发行版，被称为邪教。我有幸在刚接触Linux的时候遇到了Arch，但那时连小白都不算的我在进入安装界面后就按下了电源键。</p>
+<p>在使用名门正派Ubuntu将近两年后，终于勉强算个小白了，准备接触一下传说中的邪教，并以此文记录。除此之外，我准备将该系统装在刚买的128G U盘上，达到即插即用的效果。</p>
+<p>此文为了截图方便，操作均在VMware虚拟机上，但实际流程与实机出入不多，具体细节也可去<a href="https://wiki.archlinux.org/index.php/Installation_guide" target="_blank" rel="noopener">ArchLinux</a>官方文档查阅。</p>
+<h1 id="1-准备工作"><a href="#1-准备工作" class="headerlink" title="1 准备工作"></a>1 准备工作</h1><p>首先将官网下载的ArchLinux镜像文件写入U盘，windows下可用UltraIso软件进行写入，Linux和MacOS下可用 <code>dd</code> 命令进行写入。</p>
+<p><strong>【注意】写入镜像的U盘和要装系统的U盘是不同U盘，此处我通过VMware的虚拟光驱加载镜像，所以只需要一个U盘。</strong></p>
+<h1 id="2-开机，进入引导系统"><a href="#2-开机，进入引导系统" class="headerlink" title="2 开机，进入引导系统"></a>2 开机，进入引导系统</h1><p><img src="/images/show_disks.png" alt="image-20191109200801268"></p>
+<p>​    使用<code>ping</code>来测试网络，推荐使用dhcp来获取网络，此处无需配置。</p>
+<p><img src="/images/test_network.png" alt="image-20191109200916736"></p>
+<p>​    设置网络时钟</p>
+<p>​    通过命令<code>timedatectl set-ntp true</code>将网络时钟打开，打开后可用<code>timedatectl status</code>进行状态的确认。</p>
+<p><img src="/images/set_ntp.png" alt="image-20191109201119829"></p>
+<h1 id="3-修改更新源"><a href="#3-修改更新源" class="headerlink" title="3 修改更新源"></a>3 修改更新源</h1><p>​    通过vim命令<code>vim /etc/pacman.d/mirrorlist</code>打开镜像配置文件，将China的镜像源移至最前面，这一步是为了之后的安装工作更快，一定要做。</p>
+<p><img src="/images/edit_source.png" alt="image-20191109201402146"></p>
+<h1 id="4-对U盘【磁盘】进行分区"><a href="#4-对U盘【磁盘】进行分区" class="headerlink" title="4 对U盘【磁盘】进行分区"></a>4 对U盘【磁盘】进行分区</h1><p>使用<code>lsblk</code>查看当前挂载的磁盘，此处的sda即为我的128G U盘，不要问我为什么128G只显示114.6G。之后在命令会用<code>/dev/sda</code>来指代该磁盘。</p>
+<p><img src="/images/lsblk.png" alt="image-20191109201547221"></p>
+<h2 id="4-1-格式化"><a href="#4-1-格式化" class="headerlink" title="4.1 格式化"></a>4.1 格式化</h2><p> 使用<code>parted /dev/sda</code> 命令进入parted软件界面</p>
+<p>输入<code>mktable</code> 来建立分区表</p>
+<p>询问我们使用什么格式，此处使用UEFI模式，当然选择<code>gpt</code></p>
+<p>最后输入 <code>quit</code>退出parted界面。</p>
+<p><img src="/images/format_disk.png" alt="image-20191109201841162"></p>
+<h2 id="4-2分区"><a href="#4-2分区" class="headerlink" title="4.2分区"></a>4.2分区</h2><p>使用<code>cfdisk /dev/sda</code>命令进入分区软件界面，可以再空闲分区上选择New来创建新分区，在分区上选择Type可以改变分区的格式。</p>
+<p><img src="/images/cfdisk.png" alt="image-20191109202009776"></p>
+<p>最终我的分区结果如下：</p>
+<p><img src="/images/partition.png" alt="image-20191109202435686"></p>
+<p>其中，sda1是efi格式的启动分区，sda2我准备当做正常的U盘分区使用,sda3和sda4都是16G，分别分配给根目录和home目录。</p>
+<p>确认无误后选择<code>write</code>将分区写入磁盘，输入<code>yes</code>确认，最后选择 <code>quit</code>退出</p>
+<p><img src="/images/fdisk_result.png" alt="image-20191109202659879"></p>
+<h2 id="4-3-格式化分区"><a href="#4-3-格式化分区" class="headerlink" title="4.3 格式化分区"></a>4.3 格式化分区</h2><p>使用如下命令按之前选择的分区类型对各个分区进行格式化，efi分区需要为FAT32格式，根目录和home目录需要为linux的日志文件格式ext4。swap分区需要使用<code>swapon</code>打开。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkfs.fat -F32 /dev/sda1</span><br><span class="line">mkfs.ext4 /dev/sda3</span><br><span class="line">mkfs.ext4 /dev/sda4</span><br><span class="line">makeswap /dev/sda5</span><br><span class="line">swapon /dev/sda5</span><br></pre></td></tr></table></figure>
+<h1 id="5-安装系统"><a href="#5-安装系统" class="headerlink" title="5 安装系统"></a>5 安装系统</h1><h2 id="5-1-挂载"><a href="#5-1-挂载" class="headerlink" title="5.1 挂载"></a>5.1 挂载</h2><p>首先需要把创建好的分区挂载到引导系统的/mnt目录下，挂载的顺序需要注意一下，要先挂载根目录，再挂载home和efi目录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/sda3 /mnt</span><br><span class="line">mkdir /mnt/home</span><br><span class="line">mkdir /mnt/boot</span><br><span class="line">mkdir /mnt/boot/efi</span><br><span class="line">mount /dev/sda4 /mnt/home</span><br><span class="line">mount /dev/sda1 /mnt/boot/efi</span><br></pre></td></tr></table></figure>
+<h2 id="5-2-安装系统到U盘"><a href="#5-2-安装系统到U盘" class="headerlink" title="5.2 安装系统到U盘"></a>5.2 安装系统到U盘</h2><p>使用<code>pacstrap /mnt base linux linux-firmware</code>将系统安装到/mnt目录下，我们先前已经把根目录的分区挂载在了/mnt目录下，所以其实就是我们的根目录。</p>
+<p>安装完毕后使用如下命令生成分区信息fstab</p>
+<p><code>genfstab -U /mnt &gt;&gt; /mnt/etc/fstab</code></p>
+<p><code>cat /mnt/etc/fstab</code>  查看一下</p>
+<p><img src="/images/fstab.png" alt="image-20191109205541798"></p>
+<h1 id="6-切换系统并建立引导"><a href="#6-切换系统并建立引导" class="headerlink" title="6 切换系统并建立引导"></a>6 切换系统并建立引导</h1><p>首先切换root目录<code>arch-chroot /mnt</code></p>
+<p><img src="/images/chroot.png" alt="image-20191109205658438"></p>
+<p>切换后你可以发现命令前面的提示符已经发生了变化，此时你已经不在引导系统里面了，而是在安装的系统下了，但是此时你重启系统，还是进不了系统，因为还没安装引导程序grub。</p>
+<h2 id="6-1-对安装后的系统进行设置"><a href="#6-1-对安装后的系统进行设置" class="headerlink" title="6.1 对安装后的系统进行设置"></a>6.1 对安装后的系统进行设置</h2><p>首先设置时区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime</span><br></pre></td></tr></table></figure>
+<p>设置硬件时间 <code>hwclock --systohc</code></p>
+<p>安装vim <code>pacman -S vim</code></p>
+<p>修改locale信息，取消en_US UTF-8前的#</p>
+<p><code>vim /etc/locale.gen</code> </p>
+<p>使用<code>locale-gen</code>来生成语言信息</p>
+<p><img src="/images/locale-gen.png" alt="image-20191109210259835"></p>
+<p>最后可以编辑conf文件<code>vim /etc/locale.conf</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">en_US.UTF-8</span><br><span class="line">zh_CN.UTF-8</span><br></pre></td></tr></table></figure>
+<p>还可以重置一下root密码</p>
+<p><code>passwd root</code></p>
+<p>安装联网需要的包</p>
+<p><code>pacman -S iw wpa_supplicant dialog dhcpcd</code></p>
+<p><img src="/images/install_net.png" alt="image-20191109210702172"></p>
+<p>安装intel编码</p>
+<p><code>pacman -S intel-ucode</code></p>
+<h2 id="6-2-引导程序的安装"><a href="#6-2-引导程序的安装" class="headerlink" title="6.2 引导程序的安装"></a>6.2 引导程序的安装</h2><p>安装引导程序</p>
+<p><code>pacman -S grub efibootmgr</code></p>
+<p>设置引导</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grub-install --target=x86_64-efi --efi-directory=/mnt/boot/efi --bootloader-id=GRUB</span><br><span class="line">grub-mkconfig -o /boot/grub/grub.cfg</span><br></pre></td></tr></table></figure>
+<p><img src="/images/grub_install.png" alt="image-20191109211305279"></p>
+<h1 id="7-重启系统进入新系统"><a href="#7-重启系统进入新系统" class="headerlink" title="7 重启系统进入新系统"></a>7 重启系统进入新系统</h1><p>首先使用<code>exit</code>退出，之后把先前挂载在引导系统的磁盘卸载了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br><span class="line">umount -R /mnt</span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<p>重启后进入新系统</p>
+<p>开启dhcpcd开启网络</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable dhcpcd</span><br><span class="line">systemctl restart dhcpcd</span><br><span class="line">reboot now</span><br></pre></td></tr></table></figure>
+<p>成功进入系统，安装完成！</p>
+<h1 id="8-后续"><a href="#8-后续" class="headerlink" title="8 后续"></a>8 后续</h1><p>进入系统后还是字符界面，之后可以选择自己喜欢的桌面环境进行安装。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http:/sontal.me/posts/7bb7eb8b/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1835,180 +2052,6 @@ A = \left\{
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http:/sontal.me/posts/ddc4487b/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Sontal">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="AiM's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/posts/ddc4487b/" class="post-title-link" itemprop="url">微机原理课一些工具在Linux下的替换方法</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-10-24 00:00:00" itemprop="dateCreated datePublished" datetime="2017-10-24T00:00:00+08:00">2017-10-24</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-07-19 23:53:47" itemprop="dateModified" datetime="2019-07-19T23:53:47+08:00">2019-07-19</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>微机系统课，老师教我们做一个小型系统，给我们提供了以下工具</p>
-<ul>
-<li>Bochs</li>
-<li>winHex</li>
-<li>nasm</li>
-</ul>
-<p>虽然我也有Windows系统，但还是希望能在Linux下操作，于是寻找Linux下的环境</p>
-<p>Bochs 和 nasm都是跨平台的，所以很容易就找到了Linux平台下的Bochs 和 nasm</p>
-<p>下面讲一下安装过程<br>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/posts/ddc4487b/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2056,7 +2099,7 @@ A = \left\{
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -2270,9 +2313,9 @@ A = \left\{
       
     
       
-        
-      
     
+      
+        
       
     
       
